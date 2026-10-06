@@ -1,0 +1,176 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Northstar Capital — Brokerage</title>
+<link rel="stylesheet" href="styles.css">
+</head>
+<body>
+
+<!-- ============ LOGIN ============ -->
+<div id="view-login" class="login-wrap">
+  <div class="login-card">
+    <div class="brand">
+      <div class="brand-mark">N</div>
+      <div class="brand-name">Northstar <span>Capital</span></div>
+    </div>
+    <p class="login-sub">Sign in to your brokerage account</p>
+    <form id="login-form">
+      <div class="field">
+        <label for="login-email">Email</label>
+        <input id="login-email" type="email" placeholder="you@example.com" autocomplete="email" required>
+      </div>
+      <div class="field">
+        <label for="login-password">Password</label>
+        <input id="login-password" type="password" placeholder="••••••••" autocomplete="current-password" required>
+      </div>
+      <div class="field">
+        <label for="login-role">Sign in as</label>
+        <select id="login-role">
+          <option value="investor">Investor</option>
+          <option value="admin">Administrator</option>
+        </select>
+      </div>
+      <button class="btn" type="submit">Sign In</button>
+      <div class="form-error" id="login-error"></div>
+    </form>
+    <div class="login-hint">
+      Try investor: <code>ronald@northstar.capital</code><br>
+      Try admin console: <code>admin@northstar.capital</code> + Administrator<br>
+      Any email and password works — new emails create a fresh investor account.
+    </div>
+  </div>
+</div>
+
+<!-- ============ INVESTOR DASHBOARD ============ -->
+<div id="view-dashboard" class="hidden">
+  <div class="topbar">
+    <div class="brand">
+      <div class="brand-mark">N</div>
+      <div class="brand-name">Northstar <span>Capital</span></div>
+    </div>
+    <div class="user-chip">
+      <span>Welcome, <strong id="dash-username">—</strong></span>
+      <button class="link-btn" id="btn-logout">Sign out</button>
+    </div>
+  </div>
+  <div class="container">
+    <div class="hero">
+      <div class="label">Total Portfolio Value</div>
+      <div class="value"><small>$</small><span id="dash-portfolio">—</span></div>
+      <div class="plan">Plan: <b id="dash-plan">—</b> &nbsp;·&nbsp; <span id="dash-status">—</span></div>
+    </div>
+
+    <div class="cards">
+      <div class="card"><div class="label">Cash Balance</div><div class="big" id="dash-cash">—</div></div>
+      <div class="card"><div class="label">Invested</div><div class="big" id="dash-invested">—</div></div>
+      <div class="card"><div class="label">Return on Investment</div><div class="big" id="dash-roi">—</div></div>
+      <div class="card"><div class="label">Account</div><div class="big" id="dash-email" style="font-size:16px;word-break:break-all;">—</div></div>
+    </div>
+
+    <div class="grid-2">
+      <div class="panel">
+        <h3>Performance</h3>
+        <canvas id="perfChart"></canvas>
+      </div>
+      <div class="panel">
+        <h3>Move Money</h3>
+        <div class="money-forms">
+          <div class="money-box">
+            <h4>Deposit</h4>
+            <div class="row">
+              <input id="deposit-amount" type="number" min="0" step="0.01" placeholder="Amount">
+              <button class="btn btn-sm" id="btn-deposit">Add</button>
+            </div>
+            <div class="money-msg" id="deposit-msg"></div>
+          </div>
+          <div class="money-box">
+            <h4>Withdraw</h4>
+            <div class="row">
+              <input id="withdraw-amount" type="number" min="0" step="0.01" placeholder="Amount">
+              <button class="btn btn-sm" id="btn-withdraw">Take</button>
+            </div>
+            <div class="money-msg" id="withdraw-msg"></div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="panel" style="margin-bottom:20px;">
+      <h3>Transactions</h3>
+      <ul class="tx-list" id="tx-list"></ul>
+    </div>
+
+    <div class="panel">
+      <h3>Live Crypto Market <span class="sub" id="market-updated"></span></h3>
+      <div class="market-strip" id="market-strip"></div>
+      <div class="market-note" id="market-note"></div>
+    </div>
+  </div>
+</div>
+
+<!-- ============ ADMIN CONSOLE ============ -->
+<div id="view-admin" class="hidden">
+  <div class="topbar">
+    <div class="brand">
+      <div class="brand-mark">N</div>
+      <div class="brand-name">Northstar <span>Capital</span> · Admin</div>
+    </div>
+    <div class="user-chip">
+      <span><strong>Administrator</strong></span>
+      <button class="link-btn" id="btn-logout-admin">Sign out</button>
+    </div>
+  </div>
+  <div class="container">
+    <div class="panel">
+      <h3>Investors <span class="sub" id="admin-count"></span></h3>
+      <div class="admin-table-wrap">
+        <table class="admin-table">
+          <thead>
+            <tr>
+              <th>Name</th><th>Email</th><th>Plan</th><th>Status</th>
+              <th>Cash</th><th>Invested</th><th>ROI</th><th>Portfolio</th><th></th>
+            </tr>
+          </thead>
+          <tbody id="admin-tbody"></tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ============ EDIT MODAL ============ -->
+<div id="edit-modal" class="modal-backdrop hidden">
+  <div class="modal">
+    <h3>Edit Investor</h3>
+    <form id="edit-form">
+      <div class="grid">
+        <div class="field"><label>Name</label><input id="edit-name" required></div>
+        <div class="field"><label>Email</label><input id="edit-email" type="email" required></div>
+        <div class="field"><label>Plan</label><input id="edit-plan" required></div>
+        <div class="field"><label>Status</label>
+          <select id="edit-status">
+            <option value="active">active</option>
+            <option value="review">review</option>
+            <option value="suspended">suspended</option>
+          </select>
+        </div>
+        <div class="field"><label>Cash (USD)</label><input id="edit-cash" type="number" min="0" max="100000000" step="0.01" required></div>
+        <div class="field"><label>Invested (USD)</label><input id="edit-invested" type="number" min="0" max="100000000" step="0.01" required></div>
+        <div class="field"><label>ROI (%)</label><input id="edit-roi" type="number" min="-100" max="10000" step="0.01" required></div>
+      </div>
+      <div class="form-error" id="edit-error"></div>
+      <div class="actions">
+        <button type="submit" class="btn">Save Changes</button>
+        <button type="button" class="btn btn-ghost" id="edit-cancel">Cancel</button>
+      </div>
+    </form>
+  </div>
+</div>
+
+<div id="toast" class="toast hidden"></div>
+
+<script src="app.js"></script>
+</body>
+</html>
